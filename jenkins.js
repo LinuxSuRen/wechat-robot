@@ -11,7 +11,7 @@ const Util = require('util');
 const puppet = new PuppetPadchat();
 
 const bot = new Wechaty({
-    name: "kaiyuanshe",
+    name: "JenkinsInChina",
     puppet: puppet
 });
 
@@ -43,7 +43,7 @@ async function onMessage(msg) {
             console.log(await room.topic() + ":" + room.id);
             GitterUtils.sendMsgToGitter(bot, msg);
             CommandUtils.do_room_command(bot, msg);
-        } else if (msg.payload.type != bot.Message.Type.Unknown && msg.from().name() != "开源社-bot") {
+        } else if (msg.payload.type != bot.Message.Type.Unknown && msg.from().name() != "Jenkins中文社区") {
             CommandUtils.do_user_command(bot, msg);
         }
         DBUtils.save_msg(msg);
