@@ -1,22 +1,4 @@
 #!/usr/bin/env node
-/**
- *   Wechaty - https://github.com/chatie/wechaty
- *
- *   @copyright 2016-2018 Huan LI <zixia@zixia.net>
- *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- *
- */
 
 /**
  *
@@ -192,18 +174,18 @@ bot
    *  1. say ding first time, will got a room invitation
    *  2. say ding in room, will be removed out
    */
-  if (/^ding$/i.test(text)) {
+  if (/^加入$/i.test(text)) {
 
     /**
      *  in-room message
      */
     if (room) {
-      if (/^ding/i.test(await room.topic())) {
-        /**
-         * move contact out of room
-         */
-        await getOutRoom(from, room)
-      }
+      // if (/^ding/i.test(await room.topic())) {
+      //   /**
+      //    * move contact out of room
+      //    */
+      //   await getOutRoom(from, room)
+      // }
 
     /**
      * peer to peer message
@@ -214,7 +196,7 @@ bot
        * find room name start with "ding"
        */
       try {
-        const dingRoom = await this.Room.find({ topic: /^ding/i })
+        const dingRoom = await this.Room.find({ topic: /^Jenkins/i })
         if (dingRoom) {
           /**
            * room found
@@ -274,12 +256,12 @@ async function manageDingRoom() {
    * Find Room
    */
   try {
-    const room = await bot.Room.find({ topic: /^ding/i })
+    const room = await bot.Room.find({ topic: /^Jenkins/i })
     if (!room) {
-      log.warn('Bot', 'there is no room topic ding(yet)')
+      log.warn('Bot', 'there is no room topic Jenkins(yet)')
       return
     }
-    log.info('Bot', 'start monitor "ding" room join/leave/topic event')
+    log.info('Bot', 'start monitor "Jenkins" room join/leave/topic event')
 
     /**
      * Event: Join
@@ -322,37 +304,38 @@ async function checkRoomJoin(room, inviteeList, inviter) {
                   inviter.name(),
           )
 
-  try {
-    // let to, content
-    const userSelf = bot.userSelf()
+  await room.say('欢迎加入，请及时阅读公告:)')
+  // try {
+  //   // let to, content
+  //   const userSelf = bot.userSelf()
 
-    if (inviter.id !== userSelf.id) {
+  //   if (inviter.id !== userSelf.id) {
 
-      await room.say('RULE1: Invitation is limited to me, the owner only. Please do not invit people without notify me.',
-                      inviter,
-                    )
-      await room.say('Please contact me: by send "ding" to me, I will re-send you a invitation. Now I will remove you out, sorry.',
-                      inviteeList,
-                    )
+  //     await room.say('RULE1: Invitation is limited to me, the owner only. Please do not invit people without notify me.',
+  //                     inviter,
+  //                   )
+  //     await room.say('Please contact me: by send "ding" to me, I will re-send you a invitation. Now I will remove you out, sorry.',
+  //                     inviteeList,
+  //                   )
 
-      await room.topic('ding - warn ' + inviter.name())
-      setTimeout(
-        _ => inviteeList.forEach(c => room.del(c)),
-        10 * 1000,
-      )
+  //     await room.topic('ding - warn ' + inviter.name())
+  //     setTimeout(
+  //       _ => inviteeList.forEach(c => room.del(c)),
+  //       10 * 1000,
+  //     )
 
-    } else {
+  //   } else {
 
-      await room.say('Welcome to my room! :)')
+  //     await room.say('Welcome to my room! :)')
 
-      let welcomeTopic
-      welcomeTopic = inviteeList.map(c => c.name()).join(', ')
-      await room.topic('ding - welcome ' + welcomeTopic)
-    }
+  //     let welcomeTopic
+  //     welcomeTopic = inviteeList.map(c => c.name()).join(', ')
+  //     await room.topic('ding - welcome ' + welcomeTopic)
+  //   }
 
-  } catch (e) {
-    log.error('Bot', 'checkRoomJoin() exception: %s', e.stack)
-  }
+  // } catch (e) {
+  //   log.error('Bot', 'checkRoomJoin() exception: %s', e.stack)
+  // }
 
 }
 
