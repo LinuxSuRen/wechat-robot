@@ -219,7 +219,7 @@ bot
              * put speaker into room
              */
             log.info('Bot', 'onMessage: add sender("%s") to dingRoom("%s")', from.name(), dingRoom.topic())
-            await from.say('稍等，我会把你拉进入"' + '"。')
+            await from.say('稍等，我会把你拉进入"' + msg + '"。')
             await putInRoom(from, dingRoom)
           }
 
@@ -243,6 +243,8 @@ bot
         log.error(e)
       }
     }
+  } else if (/^加入Jenkins$/i.test(text)) {
+    await from.say('抱歉，请按照格式回复：\n加入Jenkins技术交流（或咨询、活动）')
   }
 })
 .start()
