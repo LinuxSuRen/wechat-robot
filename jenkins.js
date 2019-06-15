@@ -174,7 +174,7 @@ bot
    *  1. say ding first time, will got a room invitation
    *  2. say ding in room, will be removed out
    */
-  if (/^加入Jenkins(技术交流|社区咨询|社区活动)$/i.test(text)) {
+  if (/^加入Jenkins(技术交流|咨询|活动)$/i.test(text)) {
     msg = text
     msg = msg.replace('加入', '')
     msg = msg.replace('Jenkins', 'Jenkins中文社区')
@@ -189,12 +189,7 @@ bot
       //    */
       //   await getOutRoom(from, room)
       // }
-
-    /**
-     * peer to peer message
-     */
     } else {
-
       /**
        * find room name start with "ding"
        */
@@ -224,7 +219,7 @@ bot
              * put speaker into room
              */
             log.info('Bot', 'onMessage: add sender("%s") to dingRoom("%s")', from.name(), dingRoom.topic())
-            await from.say('ok, I will put you in ding room!')
+            await from.say('稍等，我会把你拉进入"' + '"。')
             await putInRoom(from, dingRoom)
           }
 
