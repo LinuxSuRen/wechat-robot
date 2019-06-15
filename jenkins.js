@@ -174,8 +174,10 @@ bot
    *  1. say ding first time, will got a room invitation
    *  2. say ding in room, will be removed out
    */
-  if (/^加入$/i.test(text)) {
-
+  if (/^加入Jenkins(技术交流|咨询|社区活动)$/i.test(text)) {
+    text = text.replace('加入', '')
+    text = text.replace('Jenkins', 'Jenkins中文社区')
+    
     /**
      *  in-room message
      */
