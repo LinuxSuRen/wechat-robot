@@ -199,7 +199,7 @@ bot
        * find room name start with "ding"
        */
       try {
-        const dingRoom = await this.Room.find({ topic: /^Jenkins/i })
+        const dingRoom = await this.Room.find({ topic: new RegExp("^" + msg, "i") })
         if (dingRoom) {
           /**
            * room found
