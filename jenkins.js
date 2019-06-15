@@ -174,7 +174,7 @@ bot
    *  1. say ding first time, will got a room invitation
    *  2. say ding in room, will be removed out
    */
-  if (/^加入Jenkins(技术交流|咨询|社区活动)$/i.test(text)) {
+  if (/^加入Jenkins(技术交流|社区咨询|社区活动)$/i.test(text)) {
     msg = text
     msg = msg.replace('加入', '')
     msg = msg.replace('Jenkins', 'Jenkins中文社区')
@@ -229,19 +229,20 @@ bot
           }
 
         } else {
-          /**
-           * room not found
-           */
-          log.info('Bot', 'onMessage: dingRoom not found, try to create one')
-          /**
-           * create the ding room
-           */
-          const newRoom = await createDingRoom(from)
-          console.log('createDingRoom id:', newRoom.id)
-          /**
-           * listen events from ding room
-           */
-          await manageDingRoom()
+          await from.say('抱歉，我们还没有名叫"' + msg + '"的群！')
+          // /**
+          //  * room not found
+          //  */
+          // log.info('Bot', 'onMessage: dingRoom not found, try to create one')
+          // /**
+          //  * create the ding room
+          //  */
+          // const newRoom = await createDingRoom(from)
+          // console.log('createDingRoom id:', newRoom.id)
+          // /**
+          //  * listen events from ding room
+          //  */
+          // await manageDingRoom()
         }
       } catch (e) {
         log.error(e)
