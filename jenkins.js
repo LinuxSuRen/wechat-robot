@@ -65,32 +65,40 @@ bot
  * Global Event: room-join
  */
 .on('room-join', async function(room, inviteeList, inviter) {
+  const topic = await room.topic()
   log.info( 'Bot', 'EVENT: room-join - Room "%s" got new member "%s", invited by "%s"',
-            await room.topic(),
+            topic,
             inviteeList.map(c => c.name()).join(','),
             inviter.name(),
           )
   console.log('bot room-join room id:', room.id)
-  await room.say(`欢迎加入，请及时阅读公告:)`, inviteeList[0])
+  if(shouldManageTheTopic(topic)) {
+    await room.say(`欢迎加入，请及时阅读公告:)`, inviteeList[0])
+  }
 })
 
 /**
  * Global Event: room-leave
  */
 .on('room-leave', async function(room, leaverList) {
+  const topic = await room.topic()
   log.info('Bot', 'EVENT: room-leave - Room "%s" lost member "%s"',
-                  await room.topic(),
+                  topic,
                   leaverList.map(c => c.name()).join(','),
               )
-  const topic = await room.topic()
-  const name  = leaverList[0] ? leaverList[0].name() : 'no contact!'
-  await room.say(`kick off "${name}" from "${topic}"!` )
+  if(shouldManageTheTopic(topic)) {
+    const name  = leaverList[0] ? leaverList[0].name() : 'no contact!'
+    await room.say(`kick off "${name}" from "${topic}"!` )
+  }
 })
 
 /**
  * Global Event: room-topic
  */
 .on('room-topic', async function(room, topic, oldTopic, changer) {
+  if(!shouldManageTheTopic(topic)) {
+    return
+  }
   try {
     log.info('Bot', 'EVENT: room-topic - Room "%s" change topic from "%s" to "%s" by member "%s"',
                     room,
@@ -364,4 +372,18 @@ async function createDingRoom(contact) {
     log.error('Bot', 'getHelperContact() exception:', e.stack)
     throw e
   }
+}
+
+/**
+ * Should or not take over the topic
+ * @param {*} msg 
+ */
+async function shouldTakeOver(msg){
+  const text = msg.text()
+
+  return (/^加入Jenkins(技术交流|咨询|活动)$/i.test(text))
+}
+
+async function shouldManageTheTopic(topic) {
+  return (/^Jenkins中文社区(技术交流|咨询|活动)$/i.test(topic))
 }
