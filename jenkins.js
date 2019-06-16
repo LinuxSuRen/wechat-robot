@@ -194,19 +194,6 @@ bot
 
         } else {
           await from.say('抱歉，我们还没有名叫"' + msg + '"的群！')
-          // /**
-          //  * room not found
-          //  */
-          // log.info('Bot', 'onMessage: dingRoom not found, try to create one')
-          // /**
-          //  * create the ding room
-          //  */
-          // const newRoom = await createDingRoom(from)
-          // console.log('createDingRoom id:', newRoom.id)
-          // /**
-          //  * listen events from ding room
-          //  */
-          // await manageDingRoom()
         }
       } catch (e) {
         log.error(e)
@@ -216,8 +203,62 @@ bot
     await from.say('抱歉，请按照格式回复：\n加入Jenkins技术交流（或咨询、活动）')
   }
 })
+.on('friendship', onFriendship)
 .start()
 .catch(e => console.error(e))
+
+async function onFriendship(friendship) {
+  if (friendship.type() == bot.Friendship.Type.Receive) {
+      const hello = friendship.hello()
+      if (isAddFriendAsJenkins(hello)) {
+        await friendship.accept();
+
+        await new Promise(r => setTimeout(r, 1000))
+        try {
+          msg = hello
+          msg = msg.replace('社区', '')
+          msg = msg.replace('Jenkins', 'Jenkins中文社区')
+          const dingRoom = await this.Room.find({ topic: new RegExp("^" + msg, "i") })
+          if (dingRoom) {
+            /**
+             * room found
+             */
+            log.info('Bot', 'onMessage: got dingRoom: "%s"', await dingRoom.topic())
+
+            if (await dingRoom.has(from)) {
+              /**
+               * speaker is already in room
+               */
+              const topic = await dingRoom.topic()
+              log.info('Bot', 'onMessage: sender has already in dingRoom')
+              // await dingRoom.say(`I found you have joined in room "${topic}"!`, from)
+              await from.say(`no need to ding again, because you are already in room: "${topic}"`)
+              // sendMessage({
+              //   content: 'no need to ding again, because you are already in ding room'
+              //   , to: sender
+              // })
+
+            } else {
+              /**
+               * put speaker into room
+               */
+              log.info('Bot', 'onMessage: add sender("%s") to dingRoom("%s")', from.name(), dingRoom.topic())
+              await from.say('稍等，我会把你拉进入"' + msg + '"。')
+              await putInRoom(from, dingRoom)
+            }
+
+          } else {
+            await from.say('抱歉，我们还没有名叫"' + msg + '"的群！')
+          }
+        } catch (e) {
+          log.error(e)
+        }
+      }
+  } else if (friendship.type() == bot.Friendship.Type.Confirm) {
+      var contact = await friendship.contact();
+      await contact.sync();
+  }
+}
 
 async function manageDingRoom() {
   log.info('Bot', 'manageDingRoom()')
@@ -275,38 +316,6 @@ async function checkRoomJoin(room, inviteeList, inviter) {
           )
 
   await room.say('欢迎加入，请及时阅读公告:)')
-  // try {
-  //   // let to, content
-  //   const userSelf = bot.userSelf()
-
-  //   if (inviter.id !== userSelf.id) {
-
-  //     await room.say('RULE1: Invitation is limited to me, the owner only. Please do not invit people without notify me.',
-  //                     inviter,
-  //                   )
-  //     await room.say('Please contact me: by send "ding" to me, I will re-send you a invitation. Now I will remove you out, sorry.',
-  //                     inviteeList,
-  //                   )
-
-  //     await room.topic('ding - warn ' + inviter.name())
-  //     setTimeout(
-  //       _ => inviteeList.forEach(c => room.del(c)),
-  //       10 * 1000,
-  //     )
-
-  //   } else {
-
-  //     await room.say('Welcome to my room! :)')
-
-  //     let welcomeTopic
-  //     welcomeTopic = inviteeList.map(c => c.name()).join(', ')
-  //     await room.topic('ding - welcome ' + welcomeTopic)
-  //   }
-
-  // } catch (e) {
-  //   log.error('Bot', 'checkRoomJoin() exception: %s', e.stack)
-  // }
-
 }
 
 async function putInRoom(contact, room) {
@@ -386,4 +395,8 @@ async function shouldTakeOver(msg){
 
 async function shouldManageTheTopic(topic) {
   return (/^Jenkins中文社区(技术交流|咨询|活动)$/i.test(topic))
+}
+
+async function isAddFriendAsJenkins(msg){
+  return (/^Jenkins(技术交流|社区活动|社区咨询)$/i.test(topic))
 }
