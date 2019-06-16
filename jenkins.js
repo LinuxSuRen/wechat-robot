@@ -1,30 +1,6 @@
 #!/usr/bin/env node
 
-/**
- *
- * Known ISSUES:
- *  - BUG1: can't find member by this NickName:
- *    ' leaver: 艾静<img class="emoji emojiae" text="_web" src="/zh_CN/htmledition/v2/images/spacer.gif" />JOY
- *  - BUG2: leave event not right: sometimes can not found member (any more, because they left)
- * create a room need at least three people
- * when we create a room, the following one is the 3rd people.
- *
- * put name of one of your friend here, or room create function will not work.
- *
- * ::::::::: ___CHANGE ME___ :::::::::
- *                           vvvvvvvvv
- *                           vvvvvvvvv
- *                           vvvvvvvvv
- */
 const HELPER_CONTACT_NAME = 'JenkinsInChina'
-
-/**
- *                           ^^^^^^^^^
- *                           ^^^^^^^^^
- *                           ^^^^^^^^^
- * ::::::::: ___CHANGE ME___ :::::::::
- *
- */
 
 /* tslint:disable:variable-name */
 const qrTerm = require('qrcode-terminal')
@@ -95,8 +71,7 @@ bot
             inviter.name(),
           )
   console.log('bot room-join room id:', room.id)
-  const topic = await room.topic()
-  await room.say(`welcome to "${topic}"!`, inviteeList[0])
+  await room.say(`欢迎加入，请及时阅读公告:)`, inviteeList[0])
 })
 
 /**
@@ -153,20 +128,6 @@ bot
 
   if (msg.self()) {
     return // skip self
-  }
-
-  /**
-   * `dong` will be the magic(toggle) word:
-   *  bot will quit current room by herself.
-   */
-  if (/^dong$/i.test(text)) {
-    if (room) {
-      await room.say('You said dong in the room, I will quit by myself!', from)
-      await room.quit()
-    } else {
-      await from.say('Nothing to do. If you say "dong" in a room, I will quit from the room.')
-    }
-    return
   }
 
   /**
