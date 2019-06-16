@@ -176,7 +176,7 @@ bot
              */
             const topic = await dingRoom.topic()
             log.info('Bot', 'onMessage: sender has already in dingRoom')
-            await dingRoom.say(`I found you have joined in room "${topic}"!`, from)
+            // await dingRoom.say(`I found you have joined in room "${topic}"!`, from)
             await from.say(`no need to ding again, because you are already in room: "${topic}"`)
             // sendMessage({
             //   content: 'no need to ding again, because you are already in ding room'
