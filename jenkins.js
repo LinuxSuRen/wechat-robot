@@ -147,7 +147,7 @@ bot
       if (/^违规/i.test(text)) {
         msg = text
         msg = msg.replace('违规', '')
-        msg.say(msg + '，你违规一次')
+        room.say(msg + '，你违规一次')
       }
     }
     return
