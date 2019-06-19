@@ -138,6 +138,21 @@ bot
     return // skip self
   }
 
+  if (room) {
+    if (shouldManageTheTopic(room.topic())) {
+      /**
+       * move contact out of room
+       */
+      // await getOutRoom(from, room)
+      if (/^违规/i.test(text)) {
+        msg = text
+        msg = msg.replace('违规', '')
+        msg.say(msg + '，你违规一次')
+      }
+    }
+    return
+  }
+
   /**
    * `ding` will be the magic(toggle) word:
    *  1. say ding first time, will got a room invitation
@@ -152,12 +167,12 @@ bot
      *  in-room message
      */
     if (room) {
-      // if (/^ding/i.test(await room.topic())) {
-      //   /**
-      //    * move contact out of room
-      //    */
-      //   await getOutRoom(from, room)
-      // }
+      if (shouldManageTheTopic(room.topic())) {
+        /**
+         * move contact out of room
+         */
+        // await getOutRoom(from, room)
+      }
     } else {
       /**
        * find room name start with "ding"
@@ -398,5 +413,5 @@ async function shouldManageTheTopic(topic) {
 }
 
 async function isAddFriendAsJenkins(msg){
-  return (/^Jenkins(技术交流|社区活动|社区咨询)$/i.test(topic))
+  return (/^Jenkins(技术交流|社区活动|社区咨询)$/i.test(msg))
 }
